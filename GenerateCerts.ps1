@@ -44,7 +44,7 @@ function GenerateCertificates($directory, $opensslExePath, $opensslConfigPath, $
     & $opensslExePath req -subj "/C=US/ST=WA/L=Redmond/O=Microsoft" -new -key server-key.pem -out server.csr 2>&1>$null
 
     # Generate certificate with multiple domain names
-    "subjectAltName = IP:10.10.10.20,IP:127.0.0.1,DNS.1:*.cloudapp.net,DNS.2:*.westeurope.cloudapp.azure.com" | Out-File extfile.cnf -Encoding ASCII 2>&1>$null
+    "subjectAltName = IP:10.10.10.20,IP:127.0.0.1,DNS.1:*.cloudapp.net,DNS.2:*.$location.cloudapp.azure.com" | Out-File extfile.cnf -Encoding ASCII 2>&1>$null
     & $opensslExePath x509 -req -days 365 -in server.csr -passin pass:$password -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem -extfile extfile.cnf 2>&1>$null
     & $opensslExePath genrsa -out key.pem 2048 2>&1>$null
     & $opensslExePath req -subj "/CN=client" -new -key key.pem -out client.csr 2>&1>$null
